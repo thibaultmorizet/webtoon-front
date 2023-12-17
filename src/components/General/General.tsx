@@ -1,9 +1,9 @@
 import { useLocation } from "react-router-dom";
-import { navigation } from "../../App";
+import { screens } from "../../App";
 
 export default function General() {
 	const location = useLocation();
-	const component = navigation.find((item) => item.href === location?.pathname)
+	const component = screens.find((item) => item.href === location?.pathname)
 		?.component;
 
 	return <>{component && component()}</>;

@@ -13,6 +13,29 @@ export const navigation = [
 	},
 ];
 
+export const userMenu = [
+	{
+		name: "Profile",
+		href: "/profile",
+		component: () => <h1>Profile</h1>,
+	},
+	{
+		name: "Sign Out",
+		href: "/signout",
+		component: () => <h1>Sign Out</h1>,
+	},
+];
+
+export const screens = [
+	...navigation,
+	...userMenu,
+	{
+		name: "Login",
+		href: "/login",
+		component: () => <h1>Login</h1>,
+	},
+];
+
 export default function App() {
 	return (
 		<Router>
