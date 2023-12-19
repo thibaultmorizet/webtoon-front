@@ -1,8 +1,10 @@
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, UserIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import Cookies from "js-cookie";
 import { Fragment } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { navigation, userMenu } from "../../App";
+import feathersClient from "../../client";
 
 function classNames(...classes: string[]) {
 	return classes.filter(Boolean).join(" ");
@@ -91,6 +93,25 @@ export default function Navigation() {
 													</Menu.Item>
 												);
 											})}
+											<Menu.Item>
+												{({ active }) => (
+													<button
+														onClick={() => {
+															Cookies.remove("user");
+															Cookies.remove("token");
+															Cookies.remove("loggedIn");
+															feathersClient.logout();
+															window.location.replace("/login");
+														}}
+														className={classNames(
+															active ? "bg-gray-100" : "",
+															"block px-4 py-2 text-sm text-gray-700 w-full text-left h-full"
+														)}
+													>
+														Sign Out
+													</button>
+												)}
+											</Menu.Item>
 										</Menu.Items>
 									</Transition>
 								</Menu>

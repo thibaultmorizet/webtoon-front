@@ -1,0 +1,11 @@
+import auth from "@feathersjs/authentication-client";
+import feathers, { authentication } from "@feathersjs/client";
+import rest from "@feathersjs/rest-client";
+import axios from "axios";
+import { API_URL } from "../config/staticKeys";
+const feathersClient = feathers();
+const restClient = rest(API_URL);
+feathersClient.configure(restClient.axios(axios));
+feathersClient.configure(authentication());
+feathersClient.configure(auth({ storageKey: "feathers-react-jwt" }));
+export default feathersClient;

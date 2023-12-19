@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@feathersjs/authentication-client": "^5.0.12",
+    "@feathersjs/client": "^5.0.12",
+    "@feathersjs/rest-client": "^5.0.12",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
     "@testing-library/jest-dom": "^5.17.0",
@@ -12,8 +15,12 @@
     "@types/node": "^16.18.68",
     "@types/react": "^18.2.45",
     "@types/react-dom": "^18.2.18",
+    "axios": "^1.6.2",
+    "feathers-client": "^2.4.0",
     "heroicons": "^2.0.18",
+    "js-cookie": "^3.0.5",
     "react": "^18.2.0",
+    "react-cookie": "^6.1.1",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.21.0",
     "react-scripts": "5.0.1",
@@ -45,6 +52,7 @@
     ]
   },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
     "tailwindcss": "^3.3.6"
   }
 }

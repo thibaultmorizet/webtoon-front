@@ -1,6 +1,9 @@
+import Cookies from "js-cookie";
+import { useState } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import General from "./components/General/General";
 import Home from "./components/Home/Home";
+import Login from "./components/Login/Login";
 import Navigation from "./components/Navigation/Navigation";
 import "./styles/tailwind.css";
 
@@ -19,11 +22,6 @@ export const userMenu = [
 		href: "/profile",
 		component: () => <h1>Profile</h1>,
 	},
-	{
-		name: "Sign Out",
-		href: "/signout",
-		component: () => <h1>Sign Out</h1>,
-	},
 ];
 
 export const screens = [
@@ -32,15 +30,23 @@ export const screens = [
 	{
 		name: "Login",
 		href: "/login",
-		component: () => <h1>Login</h1>,
+		component: () => <Login />,
 	},
 ];
 
 export default function App() {
+	const isLoggedIn = Cookies.get("loggedIn");
+
 	return (
 		<Router>
-			<Navigation />
-			<General />
+			{isLoggedIn ? (
+				<>
+					<Navigation />
+					<General />
+				</>
+			) : (
+				<Login />
+			)}
 		</Router>
 	);
 }
