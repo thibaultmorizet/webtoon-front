@@ -1,12 +1,62 @@
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import { useEffect, useState } from "react";
 import { AuthData } from "../Auth/AuthWrapper";
 
 export default function Profile() {
-	const { user } = AuthData();
+	const { user, updateUser } = AuthData();
+
+	const [firstname, setFirstname] = useState<string>("");
+	const [lastname, setLastname] = useState<string>("");
+	const [password, setPassword] = useState<string>("");
+	const [confirmPassword, setConfirmPassword] = useState<string>("");
+	const [showPassword, setShowPassword] = useState<boolean>(false);
+
+	const seePasswordIcon = () => {
+		if (showPassword)
+			return (
+				<EyeIcon
+					className="h-6 w-6 text-white/[0.7]"
+					aria-hidden="true"
+					onClick={() => setShowPassword(false)}
+				/>
+			);
+		else
+			return (
+				<EyeSlashIcon
+					className="h-6 w-6 text-white/[0.7]"
+					aria-hidden="true"
+					onClick={() => setShowPassword(true)}
+				/>
+			);
+	};
+
+	useEffect(() => {
+		if (showPassword) {
+			document.getElementById("password")!.setAttribute("type", "text");
+			document.getElementById("confirm-password")!.setAttribute("type", "text");
+		} else {
+			document.getElementById("password")!.setAttribute("type", "password");
+			document
+				.getElementById("confirm-password")!
+				.setAttribute("type", "password");
+		}
+	}, [showPassword]);
+
+	useEffect(() => {
+		setFirstname(user?.firstname!);
+		setLastname(user?.lastname!);
+	}, []);
+
+	const handleSubmit = async (event: { preventDefault: () => void }) => {
+		event.preventDefault();
+		updateUser(firstname, lastname, password);
+	};
+
 	return (
 		<div className="bg-gray-900">
 			<div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
 				<div className="mx-auto max-w-2xl">
-					<form>
+					<form method="PATCH" onSubmit={handleSubmit}>
 						<div className="space-y-12">
 							<div className="pb-12">
 								<h2 className="text-base font-semibold leading-7 text-white text-center">
@@ -39,7 +89,8 @@ export default function Profile() {
 												id="first-name"
 												autoComplete="given-name"
 												placeholder={user?.firstname}
-												value={user?.firstname}
+												value={firstname}
+												onChange={(e) => setFirstname(e.target.value)}
 												className="bg-white/[0.05] block w-full border-0 rounded-md px-2 py-1.5 text-white ring-1 shadow-sm ring-inset ring-white/[0.1]  placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
 											/>
 										</div>
@@ -59,7 +110,8 @@ export default function Profile() {
 												id="last-name"
 												autoComplete="family-name"
 												placeholder={user?.lastname}
-												value={user?.lastname}
+												value={lastname}
+												onChange={(e) => setLastname(e.target.value)}
 												className="bg-white/[0.05] block w-full border-0 rounded-md px-2 py-1.5 text-white ring-1 shadow-sm ring-inset ring-white/[0.1]  placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
 											/>
 										</div>
@@ -72,14 +124,21 @@ export default function Profile() {
 										>
 											Password
 										</label>
-										<div className="mt-2">
+										<div className="mt-2 relative">
 											<input
 												type="text"
 												name="password"
 												id="password"
 												autoComplete="new-password"
+												value={password}
+												onChange={(e) => setPassword(e.target.value)}
 												className="bg-white/[0.05] block w-full border-0 rounded-md px-2 py-1.5 text-white ring-1 shadow-sm ring-inset ring-white/[0.1]  placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
 											/>
+											<div className="h-full absolute top-0 right-0 flex items-center ">
+												<div className="px-2 my-1 mr-2 rounded-lg bg-indigo-500 hover:bg-indigo-400 cursor-pointer">
+													{seePasswordIcon()}
+												</div>
+											</div>
 										</div>
 									</div>
 									<div className="sm:col-span-3">
@@ -89,14 +148,21 @@ export default function Profile() {
 										>
 											Confirm Password
 										</label>
-										<div className="mt-2">
+										<div className="mt-2 relative">
 											<input
 												type="text"
 												name="confirm-password"
 												id="confirm-password"
 												autoComplete="new-password"
+												value={confirmPassword}
+												onChange={(e) => setConfirmPassword(e.target.value)}
 												className="bg-white/[0.05] block w-full border-0 rounded-md px-2 py-1.5 text-white ring-1 shadow-sm ring-inset ring-white/[0.1]  placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
 											/>
+											<div className="h-full absolute top-0 right-0 flex items-center ">
+												<div className="px-2 my-1 mr-2 rounded-lg bg-indigo-500 hover:bg-indigo-400 cursor-pointer">
+													{seePasswordIcon()}
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>

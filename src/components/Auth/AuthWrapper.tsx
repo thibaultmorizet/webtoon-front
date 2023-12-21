@@ -1,3 +1,4 @@
+import { Id } from "@feathersjs/client";
 import { jwtDecode } from "jwt-decode";
 import Lottie from "lottie-react";
 import { createContext, useContext, useEffect, useState } from "react";
@@ -9,6 +10,7 @@ import { RenderHeader } from "../Structure/Header";
 import { RenderRoutes } from "../Structure/RenderNavigation";
 
 export type User = {
+	id: Number;
 	email: string;
 	firstname: string;
 	lastname: string;
@@ -19,13 +21,25 @@ export type ContextType = {
 	user: User | undefined;
 	login: (email: string, password: string) => void;
 	logout: () => void;
+	updateUser: (
+		firstname?: string,
+		lastname?: string,
+		password?: string
+	) => void;
 };
 
 // CREATE AUTH CONTEXT AND DEFAULT VALUE
 const AuthContext = createContext<ContextType>({
-	user: { email: "", firstname: "", lastname: "", isAuthenticated: false },
+	user: {
+		id: 0,
+		email: "",
+		firstname: "",
+		lastname: "",
+		isAuthenticated: false,
+	},
 	login: () => {},
 	logout: () => {},
+	updateUser: () => {},
 });
 
 export const AuthData = () => useContext(AuthContext);
@@ -43,6 +57,7 @@ export const AuthWrapper = () => {
 					const decodedToken = jwtDecode(accessToken);
 					if ((decodedToken.exp || 0) * 1000 < Date.now()) {
 						setUser({
+							id: 0,
 							email: "",
 							firstname: "",
 							lastname: "",
@@ -57,6 +72,7 @@ export const AuthWrapper = () => {
 							icon: "👋",
 						});
 						setUser({
+							id: data.user.id,
 							email: data.user.email,
 							firstname: data.user.firstname,
 							lastname: data.user.lastname,
@@ -66,6 +82,7 @@ export const AuthWrapper = () => {
 				} catch (error) {
 					console.log(error);
 					setUser({
+						id: 0,
 						email: "",
 						firstname: "",
 						lastname: "",
@@ -75,6 +92,7 @@ export const AuthWrapper = () => {
 			})();
 		} else {
 			setUser({
+				id: 0,
 				email: "",
 				firstname: "",
 				lastname: "",
@@ -93,25 +111,63 @@ export const AuthWrapper = () => {
 			});
 
 			setUser({
+				id: data.user.id,
 				email: data.user.email,
 				firstname: data.user.firstname,
 				lastname: data.user.lastname,
 				isAuthenticated: true,
 			});
-			// window.location.replace("/");
 		} catch (error) {
 			toast.error("Invalid credentials", { icon: "🔑" });
 		}
 	};
+
 	const logout = async () => {
 		if (!user) return;
 		await feathersClient.logout();
 
-		setUser({ email: "", firstname: "", lastname: "", isAuthenticated: false });
+		setUser({
+			id: 0,
+			email: "",
+			firstname: "",
+			lastname: "",
+			isAuthenticated: false,
+		});
+	};
+
+	const updateUser = async (
+		firstname?: string,
+		lastname?: string,
+		password?: string
+	) => {
+		try {
+			// alert(firstname)
+			// alert(lastname)
+			// alert(password)
+
+			const data = await feathersClient.service("users").patch(user?.id as Id, {
+				firstname,
+				lastname,
+				password,
+			});
+			alert(data);
+
+			// 			setUser({
+			// 				id: data.user.id,
+			// 				email: data.user.email,
+			// 				firstname: data.user.firstname,
+			// 				lastname: data.user.lastname,
+			// 				isAuthenticated: true,
+			// 			});
+			toast.success("User Updated");
+		} catch (error) {
+			alert(error);
+			toast.error("An Error Occured : " + error, { icon: "❌" });
+		}
 	};
 
 	return user ? (
-		<AuthContext.Provider value={{ user, login, logout }}>
+		<AuthContext.Provider value={{ user, login, logout, updateUser }}>
 			<>
 				<RenderHeader />
 				<RenderRoutes />
