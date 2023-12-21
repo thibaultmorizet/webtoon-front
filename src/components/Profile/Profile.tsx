@@ -1,4 +1,7 @@
+import { AuthData } from "../Auth/AuthWrapper";
+
 export default function Profile() {
+	const { user } = AuthData();
 	return (
 		<div className="bg-gray-900">
 			<div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
@@ -6,22 +9,20 @@ export default function Profile() {
 					<form>
 						<div className="space-y-12">
 							<div className="pb-12">
-								<h2 className="text-base font-semibold leading-7 text-white">
+								<h2 className="text-base font-semibold leading-7 text-white text-center">
 									Personal Information
 								</h2>
 
 								<div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-									<div className="sm:col-span-4">
-										<div className="mt-2 flex flex-row">
-											<div className="mr-4 inline-block align-bottom border border-green-600">
-												<span className="text-sm font-medium leading-6 text-white border border-green-600">
+									<div className="sm:col-span-4 sm:col-start-2 justify-center">
+											<div className="mt-2 flex flex-row items-center">
+												<span className="mr-4  inline-block text-sm font-medium leading-6 text-white h-min">
 													Email
 												</span>
+												<p className="bg-white/[0.04] block w-full border-0 rounded-md px-2 py-1.5 text-white/[0.7] ring-1 shadow-sm ring-inset ring-white/[0.07]  placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
+													{user?.email}
+												</p>
 											</div>
-											<p className="bg-white/[0.05] block w-full border-0 rounded-md px-2 py-1.5 text-white ring-1 shadow-sm ring-inset ring-white/[0.1]  placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
-												thi
-											</p>
-										</div>
 									</div>
 
 									<div className="sm:col-span-3">
