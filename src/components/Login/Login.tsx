@@ -1,47 +1,15 @@
-import Cookies from "js-cookie";
-import { useEffect, useState } from "react";
-import { loginCheck } from "../../actions/loginCheck";
-import feathersClient from "../../client";
+import { useState } from "react";
+import { AuthData } from "../Auth/AuthWrapper";
 
 export default function Login() {
-	useEffect(() => {
-		const token = Cookies.get("token");
-		if (!token) return;
-		loginCheck(token);
-	}, []);
+	const [email, setEmail] = useState<string>("");
+	const [password, setPassword] = useState<string>("");
 
-	const [credentials, setCredentials] = useState({
-		email: "",
-		password: "",
-	});
+	const { login } = AuthData();
 
-	const [error, setError] = useState(null);
-
-	const handleEmailInputChange = (event: { target: { value: any } }) => {
-		setCredentials({ ...credentials, email: event.target.value });
-	};
-	const handlePasswordInputChange = (event: { target: { value: any } }) => {
-		setCredentials({ ...credentials, password: event.target.value });
-	};
 	const handleSubmit = async (event: { preventDefault: () => void }) => {
 		event.preventDefault();
-		try {
-			setError(null);
-
-			const result = await feathersClient.authenticate({
-				strategy: "local",
-				...credentials,
-			});
-			const token = result.accessToken;
-
-			Cookies.set("token", token);
-			Cookies.set("loggedIn", "true");
-			Cookies.set("user", JSON.stringify(result.user));
-
-			window.location.replace("/");
-		} catch (error: any) {
-			setError(error.message);
-		}
+		login(email, password);
 	};
 
 	return (
@@ -60,7 +28,7 @@ export default function Login() {
 								htmlFor="email"
 								className="block text-sm font-medium leading-6 text-white"
 							>
-								Email address
+								Email
 							</label>
 							<div className="mt-2">
 								<input
@@ -70,8 +38,8 @@ export default function Login() {
 									autoComplete="email"
 									required
 									className="bg-white/[0.05] block w-full border-0 rounded-md px-2 py-1.5 text-white ring-1 shadow-sm ring-inset ring-white/[0.1]  placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-									value={credentials.email}
-									onChange={handleEmailInputChange}
+									value={email}
+									onChange={(e) => setEmail(e.target.value)}
 								/>
 							</div>
 						</div>
@@ -93,8 +61,8 @@ export default function Login() {
 									autoComplete="current-password"
 									required
 									className="bg-white/[0.05] block w-full border-0 rounded-md px-2 py-1.5 text-white ring-1 shadow-sm ring-inset ring-white/[0.1]  placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-									value={credentials.password}
-									onChange={handlePasswordInputChange}
+									value={password}
+									onChange={(e) => setPassword(e.target.value)}
 								/>
 							</div>
 						</div>
@@ -107,7 +75,6 @@ export default function Login() {
 								Sign in
 							</button>
 						</div>
-						{error && <div className="text-red-500 text-center">{error}</div>}
 					</form>
 				</div>
 			</div>

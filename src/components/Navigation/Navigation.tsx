@@ -1,10 +1,9 @@
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, UserIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import Cookies from "js-cookie";
 import { Fragment } from "react";
-import { NavLink, useLocation } from "react-router-dom";
-import { navigation, userMenu } from "../../App";
-import feathersClient from "../../client";
+import { Link, useLocation } from "react-router-dom";
+import { AuthData } from "../Auth/AuthWrapper";
+import { nav } from "../Structure/Navigation";
 
 function classNames(...classes: string[]) {
 	return classes.filter(Boolean).join(" ");
@@ -12,6 +11,7 @@ function classNames(...classes: string[]) {
 
 export default function Navigation() {
 	const location = useLocation();
+	const { user, logout } = AuthData();
 
 	return (
 		<Disclosure as="nav" className="bg-gray-950">
@@ -34,23 +34,25 @@ export default function Navigation() {
 							<div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
 								<div className="hidden sm:ml-6 sm:block">
 									<div className="flex space-x-4">
-										{navigation.map((item) => {
-											const isCurrent = item?.href === location?.pathname;
-											return (
-												<NavLink
-													to={item.href}
-													key={item.name}
-													className={classNames(
-														isCurrent
-															? "bg-gray-900 text-white"
-															: "text-gray-300 hover:bg-gray-700 hover:text-white",
-														"rounded-md px-3 py-2 text-sm font-medium"
-													)}
-													aria-current={isCurrent ? "page" : undefined}
-												>
-													{item.name}
-												</NavLink>
-											);
+										{nav.map((item) => {
+											const isCurrent = item?.path === location?.pathname;
+											if (user?.isAuthenticated && item.isNavBar) {
+												return (
+													<Link
+														to={item.path}
+														key={item.name}
+														className={classNames(
+															isCurrent
+																? "bg-gray-900 text-white"
+																: "text-gray-300 hover:bg-gray-800 hover:text-white",
+															"rounded-md px-3 py-2 text-sm font-medium"
+														)}
+														aria-current={isCurrent ? "page" : undefined}
+													>
+														{item.name}
+													</Link>
+												);
+											} else return false;
 										})}
 									</div>
 								</div>
@@ -75,32 +77,31 @@ export default function Navigation() {
 										leaveTo="transform opacity-0 scale-95"
 									>
 										<Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-											{userMenu.map((item) => {
-												return (
-													<Menu.Item key={item.name}>
-														{({ active }) => (
-															<a
-																href={item.href}
-																className={classNames(
-																	active ? "bg-gray-100" : "",
-																	"block px-4 py-2 text-sm text-gray-700"
-																)}
-															>
-																{item.name}
-															</a>
-														)}
-													</Menu.Item>
-												);
+											{nav.map((item) => {
+												if (user?.isAuthenticated && item.isMenu) {
+													return (
+														<Menu.Item key={item.name}>
+															{({ active }) => (
+																<Link
+																	to={item.path}
+																	key={item.name}
+																	className={classNames(
+																		active ? "bg-gray-100" : "",
+																		"block px-4 py-2 text-sm text-gray-700"
+																	)}
+																>
+																	{item.name}
+																</Link>
+															)}
+														</Menu.Item>
+													);
+												} else return false;
 											})}
 											<Menu.Item>
 												{({ active }) => (
 													<button
 														onClick={() => {
-															Cookies.remove("user");
-															Cookies.remove("token");
-															Cookies.remove("loggedIn");
-															feathersClient.logout();
-															window.location.replace("/login");
+															logout();
 														}}
 														className={classNames(
 															active ? "bg-gray-100" : "",
@@ -120,24 +121,25 @@ export default function Navigation() {
 
 					<Disclosure.Panel className="sm:hidden">
 						<div className="space-y-1 px-2 pb-3 pt-2">
-							{navigation.map((item) => {
-								const isCurrent = item?.href === location?.pathname;
-								return (
-									<Disclosure.Button
-										key={item.name}
-										as="a"
-										href={item.href}
-										className={classNames(
-											isCurrent
-												? "bg-gray-900 text-white"
-												: "text-gray-300 hover:bg-gray-700 hover:text-white",
-											"block rounded-md px-3 py-2 text-base font-medium"
-										)}
-										aria-current={isCurrent ? "page" : undefined}
-									>
-										{item.name}
-									</Disclosure.Button>
-								);
+							{nav.map((item) => {
+								const isCurrent = item?.path === location?.pathname;
+								if (user?.isAuthenticated && item.isNavBar) {
+									return (
+										<Link
+											key={item.name}
+											to={item.path}
+											className={classNames(
+												isCurrent
+													? "bg-gray-900 text-white"
+													: "text-gray-300 hover:bg-gray-700 hover:text-white",
+												"block rounded-md px-3 py-2 text-base font-medium"
+											)}
+											aria-current={isCurrent ? "page" : undefined}
+										>
+											{item.name}
+										</Link>
+									);
+								} else return false;
 							})}
 						</div>
 					</Disclosure.Panel>
