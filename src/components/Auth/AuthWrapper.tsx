@@ -10,6 +10,8 @@ import { RenderRoutes } from "../Structure/RenderNavigation";
 
 export type User = {
 	email: string;
+	firstname: string;
+	lastname: string;
 	isAuthenticated: boolean;
 };
 
@@ -21,7 +23,7 @@ export type ContextType = {
 
 // CREATE AUTH CONTEXT AND DEFAULT VALUE
 const AuthContext = createContext<ContextType>({
-	user: { email: "", isAuthenticated: false },
+	user: { email: "", firstname: "", lastname: "", isAuthenticated: false },
 	login: () => {},
 	logout: () => {},
 });
@@ -40,7 +42,12 @@ export const AuthWrapper = () => {
 				try {
 					const decodedToken = jwtDecode(accessToken);
 					if ((decodedToken.exp || 0) * 1000 < Date.now()) {
-						setUser({ email: "", isAuthenticated: false });
+						setUser({
+							email: "",
+							firstname: "",
+							lastname: "",
+							isAuthenticated: false,
+						});
 					} else {
 						const data = await feathersClient.authenticate({
 							strategy: "jwt",
@@ -49,15 +56,30 @@ export const AuthWrapper = () => {
 						toast.success("Welcome back " + data.user.email, {
 							icon: "👋",
 						});
-						setUser({ email: data.user.email, isAuthenticated: true });
+						setUser({
+							email: data.user.email,
+							firstname: data.user.firstname,
+							lastname: data.user.lastname,
+							isAuthenticated: true,
+						});
 					}
 				} catch (error) {
 					console.log(error);
-					setUser({ email: "", isAuthenticated: false });
+					setUser({
+						email: "",
+						firstname: "",
+						lastname: "",
+						isAuthenticated: false,
+					});
 				}
 			})();
 		} else {
-			setUser({ email: "", isAuthenticated: false });
+			setUser({
+				email: "",
+				firstname: "",
+				lastname: "",
+				isAuthenticated: false,
+			});
 		}
 	}, []);
 
@@ -70,7 +92,12 @@ export const AuthWrapper = () => {
 				password,
 			});
 
-			setUser({ email: data.user.email, isAuthenticated: true });
+			setUser({
+				email: data.user.email,
+				firstname: data.user.firstname,
+				lastname: data.user.lastname,
+				isAuthenticated: true,
+			});
 			// window.location.replace("/");
 		} catch (error) {
 			toast.error("Invalid credentials", { icon: "🔑" });
@@ -80,7 +107,7 @@ export const AuthWrapper = () => {
 		if (!user) return;
 		await feathersClient.logout();
 
-		setUser({ email: "", isAuthenticated: false });
+		setUser({ email: "", firstname: "", lastname: "", isAuthenticated: false });
 	};
 
 	return user ? (

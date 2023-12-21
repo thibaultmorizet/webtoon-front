@@ -15,14 +15,14 @@ export default function Profile() {
 
 								<div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
 									<div className="sm:col-span-4 sm:col-start-2 justify-center">
-											<div className="mt-2 flex flex-row items-center">
-												<span className="mr-4  inline-block text-sm font-medium leading-6 text-white h-min">
-													Email
-												</span>
-												<p className="bg-white/[0.04] block w-full border-0 rounded-md px-2 py-1.5 text-white/[0.7] ring-1 shadow-sm ring-inset ring-white/[0.07]  placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
-													{user?.email}
-												</p>
-											</div>
+										<div className="mt-2 flex flex-row items-center">
+											<span className="mr-4  inline-block text-sm font-medium leading-6 text-white h-min">
+												Email
+											</span>
+											<p className="bg-white/[0.04] block w-full border-0 rounded-md px-2 py-1.5 text-white/[0.7] ring-1 shadow-sm ring-inset ring-white/[0.07]  placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
+												{user?.email}
+											</p>
+										</div>
 									</div>
 
 									<div className="sm:col-span-3">
@@ -38,6 +38,8 @@ export default function Profile() {
 												name="first-name"
 												id="first-name"
 												autoComplete="given-name"
+												placeholder={user?.firstname}
+												value={user?.firstname}
 												className="bg-white/[0.05] block w-full border-0 rounded-md px-2 py-1.5 text-white ring-1 shadow-sm ring-inset ring-white/[0.1]  placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
 											/>
 										</div>
@@ -56,6 +58,8 @@ export default function Profile() {
 												name="last-name"
 												id="last-name"
 												autoComplete="family-name"
+												placeholder={user?.lastname}
+												value={user?.lastname}
 												className="bg-white/[0.05] block w-full border-0 rounded-md px-2 py-1.5 text-white ring-1 shadow-sm ring-inset ring-white/[0.1]  placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
 											/>
 										</div>

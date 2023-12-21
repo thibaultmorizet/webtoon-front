@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import { useEffect, useState } from "react";
 import { AuthData } from "../Auth/AuthWrapper";
 
 export default function Login() {
@@ -12,6 +13,35 @@ export default function Login() {
 		login(email, password);
 	};
 
+	const [showPassword, setShowPassword] = useState<boolean>(false);
+
+	const seePasswordIcon = () => {
+		if (showPassword)
+			return (
+				<EyeIcon
+					className="h-6 w-6 text-white/[0.7]"
+					aria-hidden="true"
+					onClick={() => setShowPassword(false)}
+				/>
+			);
+		else
+			return (
+				<EyeSlashIcon
+					className="h-6 w-6 text-white/[0.7]"
+					aria-hidden="true"
+					onClick={() => setShowPassword(true)}
+				/>
+			);
+	};
+
+	useEffect(() => {
+		if (showPassword) {
+			document.getElementById("password")!.setAttribute("type", "text");
+		} else {
+			document.getElementById("password")!.setAttribute("type", "password");
+		}
+	}, [showPassword]);
+	
 	return (
 		<>
 			<div className="flex min-h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8 align-middle bg-gray-900">
@@ -53,7 +83,7 @@ export default function Login() {
 									Password
 								</label>
 							</div>
-							<div className="mt-2">
+							<div className="mt-2 relative">
 								<input
 									id="password"
 									name="password"
@@ -64,6 +94,11 @@ export default function Login() {
 									value={password}
 									onChange={(e) => setPassword(e.target.value)}
 								/>
+								<div className="h-full absolute top-0 right-0 flex items-center ">
+									<div className="px-2 my-1 mr-2 rounded-lg bg-indigo-500 hover:bg-indigo-400 cursor-pointer">
+										{seePasswordIcon()}
+									</div>
+								</div>
 							</div>
 						</div>
 
