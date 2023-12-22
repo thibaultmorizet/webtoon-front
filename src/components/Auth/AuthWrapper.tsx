@@ -163,10 +163,10 @@ export const AuthWrapper = () => {
 
 	return user ? (
 		<AuthContext.Provider value={{ user, login, logout, updateUser }}>
-			<>
+			<div className="min-h-screen flex flex-1 flex-col">
 				<RenderHeader />
 				<RenderRoutes />
-			</>
+			</div>
 		</AuthContext.Provider>
 	) : (
 		<div style={{ height: "80vh", display: "flex", alignItems: "center" }}>

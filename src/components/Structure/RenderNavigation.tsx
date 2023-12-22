@@ -1,6 +1,5 @@
 import { Route, Routes } from "react-router-dom";
 import { AuthData } from "../../components/Auth/AuthWrapper";
-// import MenuIcon from "../MenuIcon/MenuIcon";
 import Navigation from "../Navigation/Navigation";
 import NotFound from "../NotFound/NotFound";
 import { nav } from "./Navigation";

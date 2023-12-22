@@ -53,7 +53,7 @@ export default function Profile() {
 	};
 
 	return (
-		<div className="bg-gray-900">
+		<div className="bg-gray-900 flex-1">
 			<div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
 				<div className="mx-auto max-w-2xl">
 					<form method="PATCH" onSubmit={handleSubmit}>
