@@ -141,27 +141,22 @@ export const AuthWrapper = () => {
 		password?: string
 	) => {
 		try {
-			// alert(firstname)
-			// alert(lastname)
-			// alert(password)
-
 			const data = await feathersClient.service("users").patch(user?.id as Id, {
 				firstname,
 				lastname,
 				password,
 			});
-			alert(data);
+			console.log(data);
 
-			// 			setUser({
-			// 				id: data.user.id,
-			// 				email: data.user.email,
-			// 				firstname: data.user.firstname,
-			// 				lastname: data.user.lastname,
-			// 				isAuthenticated: true,
-			// 			});
+			setUser({
+				id: data.id,
+				email: data.email,
+				firstname: data.firstname,
+				lastname: data.lastname,
+				isAuthenticated: true,
+			});
 			toast.success("User Updated");
 		} catch (error) {
-			alert(error);
 			toast.error("An Error Occured : " + error, { icon: "❌" });
 		}
 	};
