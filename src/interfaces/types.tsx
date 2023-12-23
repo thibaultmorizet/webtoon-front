@@ -44,27 +44,33 @@ export type Tag = {
 
 export type Filters = [
 	{
-		filterName: "language";
+		filterKey: "language";
+		filterName: "Languages";
 		filterValues: Language[] | undefined;
 	},
 	{
-		filterName: "category";
+		filterKey: "category";
+		filterName: "Categories";
 		filterValues: Category[] | undefined;
 	},
 	{
-		filterName: "status";
+		filterKey: "status";
+		filterName: "Status";
 		filterValues: Status[] | undefined;
 	},
 	{
-		filterName: "author";
+		filterKey: "author";
+		filterName: "Authors";
 		filterValues: Author[] | undefined;
 	},
 	{
-		filterName: "artist";
+		filterKey: "artist";
+		filterName: "Artists";
 		filterValues: Artist[] | undefined;
 	},
 	{
-		filterName: "tag";
+		filterKey: "tag";
+		filterName: "Tags";
 		filterValues: Tag[] | undefined;
 	},
 ];

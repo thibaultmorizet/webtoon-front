@@ -25,30 +25,35 @@ export const SearchProvider = ({ children }: { children?: JSX.Element }) => {
 		const artists = await feathersClient.service("artists").find();
 		const tags = await feathersClient.service("tags").find();
 
-		
 		setFilters([
 			{
-				filterName: "language",
+				filterKey: "language",
+				filterName: "Languages",
 				filterValues: languages.data,
 			},
 			{
-				filterName: "category",
+				filterKey: "category",
+				filterName: "Categories",
 				filterValues: categories.data,
 			},
 			{
-				filterName: "status",
+				filterKey: "status",
+				filterName: "Status",
 				filterValues: status.data,
 			},
 			{
-				filterName: "author",
+				filterKey: "author",
+				filterName: "Authors",
 				filterValues: authors.data,
 			},
 			{
-				filterName: "artist",
+				filterKey: "artist",
+				filterName: "Artists",
 				filterValues: artists.data,
 			},
 			{
-				filterName: "tag",
+				filterKey: "tag",
+				filterName: "Tags",
 				filterValues: tags.data,
 			},
 		]);

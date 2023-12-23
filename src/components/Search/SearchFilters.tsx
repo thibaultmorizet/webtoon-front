@@ -76,7 +76,7 @@ export default function SearchFilters({
 										{filters?.map((section) => (
 											<Disclosure
 												as="div"
-												key={section.filterName}
+												key={section.filterKey}
 												className="border-t border-gray-400 px-4 py-6"
 											>
 												{({ open }) => (
@@ -84,7 +84,7 @@ export default function SearchFilters({
 														<h3 className="-mx-2 -my-3 flow-root">
 															<Disclosure.Button className="flex w-full items-center justify-between rounded-lg bg-gray-700 px-2 py-3 text-white hover:text-gray-400">
 																<span className="font-medium text-white">
-																	{firstLetterToUpperCase(section.filterName)}
+																	{section.filterName}
 																</span>
 																<span className="ml-6 flex items-center">
 																	{open ? (
@@ -110,15 +110,15 @@ export default function SearchFilters({
 																			className="flex items-center"
 																		>
 																			<input
-																				id={`filter-mobile-${section.filterName}-${optionIdx}`}
-																				name={`${section.filterName}[]`}
+																				id={`filter-mobile-${section.filterKey}-${optionIdx}`}
+																				name={`${section.filterKey}[]`}
 																				defaultValue={option.name}
 																				type="checkbox"
 																				defaultChecked={option.checked}
 																				className="h-4 w-4 rounded border-gray-700 text-indigo-600 focus:ring-indigo-500"
 																			/>
 																			<label
-																				htmlFor={`filter-mobile-${section.filterName}-${optionIdx}`}
+																				htmlFor={`filter-mobile-${section.filterKey}-${optionIdx}`}
 																				className="ml-3 min-w-0 flex-1 text-white"
 																			>
 																				{option.name}
@@ -143,7 +143,7 @@ export default function SearchFilters({
 					<div className="flex items-baseline justify-between border-b border-gray-400 pb-6 pt-24">
 						{/* Search bar */}
 						<div className="min-w-5" />
-						<div className="flex-1 max-w-xl">
+						<div className="flex-1 max-w-xl mr-8">
 							<label htmlFor="search" className="sr-only">
 								Search
 							</label>
@@ -233,7 +233,7 @@ export default function SearchFilters({
 								{filters?.map((section, index) => (
 									<Disclosure
 										as="div"
-										key={section.filterName}
+										key={section.filterKey}
 										className={classNames(
 											"border-b border-gray-400 py-6",
 											index === filters.length - 1 ? "border-b-0" : ""
@@ -269,15 +269,15 @@ export default function SearchFilters({
 																className="flex items-center"
 															>
 																<input
-																	id={`filter-${section.filterName}-${optionIdx}`}
-																	name={`${section.filterName}[]`}
+																	id={`filter-${section.filterKey}-${optionIdx}`}
+																	name={`${section.filterKey}[]`}
 																	defaultValue={option.name}
 																	type="checkbox"
 																	defaultChecked={option.checked}
 																	className="h-4 w-4 rounded border-gray-700 text-indigo-600 focus:ring-indigo-500"
 																/>
 																<label
-																	htmlFor={`filter-${section.filterName}-${optionIdx}`}
+																	htmlFor={`filter-${section.filterKey}-${optionIdx}`}
 																	className="ml-3 text-sm text-white"
 																>
 																	{option.name}
