@@ -5,6 +5,7 @@ import feathersClient from "../../configs/feathers";
 import { SearchContextType } from "../../interfaces/contextTypes";
 import { Filters, Results } from "../../interfaces/types";
 import "../../styles/tailwind.css";
+import { AuthData } from "./AuthProvider";
 
 // CREATE AUTH CONTEXT AND DEFAULT VALUE
 const SearchContext = createContext<SearchContextType>({
@@ -18,14 +19,17 @@ const SearchContext = createContext<SearchContextType>({
 export const SearchData = () => useContext(SearchContext);
 
 export const SearchProvider = ({ children }: { children?: JSX.Element }) => {
+	const { user } = AuthData();
+
 	useEffect(() => {
 		getFilters();
-	}, []);
+	}, [user]);
 
 	const [filters, setFilters] = useState<Filters>();
 	const [search, setSearch] = useState<string>();
 	const [results, setResults] = useState<Results>();
 	const getFilters = async () => {
+		if (!user?.isAuthenticated) return;
 		const languages = await feathersClient.service("languages").find();
 		const status = await feathersClient.service("status").find();
 		const trackSites = await feathersClient.service("tracksites").find();
@@ -33,18 +37,21 @@ export const SearchProvider = ({ children }: { children?: JSX.Element }) => {
 		setFilters({
 			language: {
 				filterName: "Languages",
-				filterValues: languages.data,
+				filterValues: languages.data.map((language: any, index: number) => {
+					return { ...language, checked: index === 0 ? true : false };
+				}),
 			},
 			status: {
 				filterName: "Status",
-				filterValues: status.data,
+				filterValues: status.data.map((statut: any, index: number) => {
+					return { ...statut, checked: index === 0 ? true : false };
+				}),
 			},
 			trackSite: {
 				filterName: "Track Sites",
-				filterValues: trackSites.data.map((trackSite: any) => ({
-					...trackSite,
-					checked: true,
-				})),
+				filterValues: trackSites.data.map((trackSite: any, index: number) => {
+					return { ...trackSite, checked: index === 0 ? true : false };
+				}),
 			},
 		});
 	};
@@ -63,6 +70,13 @@ export const SearchProvider = ({ children }: { children?: JSX.Element }) => {
 
 	const getResults = async (filters?: Filters, search?: string) => {
 		if (!filters) return;
+		console.log(filters);
+
+		const checkedLanguages = filters.language.filterValues?.filter(
+			(language) => language.checked
+		);
+
+		if (!checkedLanguages?.[0]) return;
 		const checkedTracksites = filters.trackSite.filterValues?.filter(
 			(trackSite) => trackSite.checked
 		);
@@ -96,19 +110,57 @@ export const SearchProvider = ({ children }: { children?: JSX.Element }) => {
 							]}`
 					)
 					.join("");
-				console.log("status", status);
 
 				const result = await fetch(
-					`${trackSite.url}/manga/?limit=32&offset=0${title}${language}${status}`
+					`${trackSite.url}/manga/?limit=32&offset=0&includes[]=cover_art${title}${language}${status}`
 				)
 					.then((res) => res.json())
 					.then((res) => res.data)
-					.then((res) => console.log(res[0]));
+					.then((res) => {
+						const result = res.map((manga: any) => {
+							const mangaCoverFilename = manga.relationships.filter(
+								(relationship: any) => relationship.type === "cover_art"
+							)[0].attributes.fileName;
+
+							const statusName = {
+								ongoing: "On Going",
+								completed: "Finished",
+								cancelled: "Cancelled",
+								hiatus: "Pausing",
+							};
+
+							const language = filters.language.filterValues?.filter(
+								(language) => language.checked
+							)?.[0]?.name;
+
+							const mangaId = manga.id;
+							const mangaTitle = manga.attributes.title.en;
+							const mangaStatus =
+								statusName?.[
+									manga.attributes.status as keyof typeof statusName
+								];
+							const mangaLanguage = language;
+							const mangaLastChapter = manga.attributes.lastChapter;
+
+							const mangacover = `https://uploads.mangadex.org/covers/${mangaId}/${mangaCoverFilename}`;
+							return {
+								id: mangaId,
+								title: mangaTitle,
+								poster: mangacover,
+								status: mangaStatus,
+								language: mangaLanguage,
+								lastChapter: mangaLastChapter,
+							};
+						});
+						return result;
+					});
+				setResults(result);
 			}
 		});
+		return;
 	};
 
-	return filters ? (
+	return (user?.isAuthenticated && filters) || !user?.isAuthenticated ? (
 		<SearchContext.Provider
 			value={{ filters, results, updateFilters, search, updateSearch }}
 		>

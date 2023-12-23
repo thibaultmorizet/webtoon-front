@@ -106,15 +106,17 @@ export default function SearchFilters({
 																					id={`filter-mobile-${filterKey}-${optionIdx}`}
 																					name={`${filterKey}[]`}
 																					defaultValue={option.name}
-																					type="checkbox"
+																					type="radio"
 																					defaultChecked={option.checked}
 																					className="h-4 w-4 rounded border-gray-700 text-indigo-600 focus:ring-indigo-500"
 																					onClick={() => {
-																						if (option.checked) {
-																							option.checked = false;
-																						} else {
-																							option.checked = true;
-																						}
+																						section.filterValues?.forEach(
+																							(option) => {
+																								option.checked = false;
+																							}
+																						);
+																						option.checked = true;
+
 																						updateFilters(filters);
 																					}}
 																				/>
@@ -233,15 +235,17 @@ export default function SearchFilters({
 																			id={`filter-${filterKey}-${optionIdx}`}
 																			name={`${filterKey}[]`}
 																			defaultValue={option.name}
-																			type="checkbox"
+																			type="radio"
 																			defaultChecked={option.checked}
 																			className="h-4 w-4 rounded border-gray-700 text-indigo-600 focus:ring-indigo-500"
 																			onClick={() => {
-																				if (option.checked) {
-																					option.checked = false;
-																				} else {
-																					option.checked = true;
-																				}
+																				section.filterValues?.forEach(
+																					(option) => {
+																						option.checked = false;
+																					}
+																				);
+																				option.checked = true;
+
 																				updateFilters(filters);
 																			}}
 																		/>

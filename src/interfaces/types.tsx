@@ -56,7 +56,8 @@ export type Filters = {
 export type Results = {
 	id: number;
 	title: string;
-	description: string;
 	poster: string;
-	releaseDate: string;
+	status: string;
+	language: string;
+	lastChapter: string;
 }[];
