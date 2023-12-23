@@ -6,8 +6,9 @@ import {
 	PlusIcon,
 } from "@heroicons/react/20/solid";
 import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Fragment, useState } from "react";
-import { classNames, firstLetterToUpperCase } from "../../utils/statics";
+import { Fragment, useEffect, useState } from "react";
+import { Filters } from "../../interfaces/types";
+import { classNames } from "../../utils/statics";
 import { SearchData } from "../Providers/SearchProvider";
 
 export default function SearchFilters({
@@ -22,7 +23,8 @@ export default function SearchFilters({
 		{ name: "Newest" },
 	];
 
-	const { filters } = SearchData();
+	const { filters, updateFilters, search, updateSearch } = SearchData();
+	const objectKeysFilters = Object.keys(filters || {});
 
 	const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
@@ -73,65 +75,77 @@ export default function SearchFilters({
 
 									{/* Filters */}
 									<form className="mt-4 border-t border-gray-400">
-										{filters?.map((section) => (
-											<Disclosure
-												as="div"
-												key={section.filterKey}
-												className="border-t border-gray-400 px-4 py-6"
-											>
-												{({ open }) => (
-													<>
-														<h3 className="-mx-2 -my-3 flow-root">
-															<Disclosure.Button className="flex w-full items-center justify-between rounded-lg bg-gray-700 px-2 py-3 text-white hover:text-gray-400">
-																<span className="font-medium text-white">
-																	{section.filterName}
-																</span>
-																<span className="ml-6 flex items-center">
-																	{open ? (
-																		<MinusIcon
-																			className="h-5 w-5"
-																			aria-hidden="true"
-																		/>
-																	) : (
-																		<PlusIcon
-																			className="h-5 w-5"
-																			aria-hidden="true"
-																		/>
-																	)}
-																</span>
-															</Disclosure.Button>
-														</h3>
-														<Disclosure.Panel className="pt-6">
-															<div className="space-y-6">
-																{section?.filterValues?.map(
-																	(option, optionIdx) => (
-																		<div
-																			key={option.name}
-																			className="flex items-center"
-																		>
-																			<input
-																				id={`filter-mobile-${section.filterKey}-${optionIdx}`}
-																				name={`${section.filterKey}[]`}
-																				defaultValue={option.name}
-																				type="checkbox"
-																				defaultChecked={option.checked}
-																				className="h-4 w-4 rounded border-gray-700 text-indigo-600 focus:ring-indigo-500"
+										{objectKeysFilters.map((filterKey) => {
+											const section = filters?.[filterKey as keyof Filters];
+
+											return (
+												<Disclosure
+													as="div"
+													key={filterKey}
+													className="border-t border-gray-400 px-4 py-6"
+												>
+													{({ open }) => (
+														<>
+															<h3 className="-mx-2 -my-3 flow-root">
+																<Disclosure.Button className="flex w-full items-center justify-between rounded-lg bg-gray-700 px-2 py-3 text-white hover:text-gray-400">
+																	<span className="font-medium text-white">
+																		{section?.filterName}
+																	</span>
+																	<span className="ml-6 flex items-center">
+																		{open ? (
+																			<MinusIcon
+																				className="h-5 w-5"
+																				aria-hidden="true"
 																			/>
-																			<label
-																				htmlFor={`filter-mobile-${section.filterKey}-${optionIdx}`}
-																				className="ml-3 min-w-0 flex-1 text-white"
+																		) : (
+																			<PlusIcon
+																				className="h-5 w-5"
+																				aria-hidden="true"
+																			/>
+																		)}
+																	</span>
+																</Disclosure.Button>
+															</h3>
+															<Disclosure.Panel className="pt-6">
+																<div className="space-y-6">
+																	{section?.filterValues?.map(
+																		(option, optionIdx) => (
+																			<div
+																				key={option.name}
+																				className="flex items-center"
 																			>
-																				{option.name}
-																			</label>
-																		</div>
-																	)
-																)}
-															</div>
-														</Disclosure.Panel>
-													</>
-												)}
-											</Disclosure>
-										))}
+																				<input
+																					id={`filter-mobile-${filterKey}-${optionIdx}`}
+																					name={`${filterKey}[]`}
+																					defaultValue={option.name}
+																					type="checkbox"
+																					defaultChecked={option.checked}
+																					className="h-4 w-4 rounded border-gray-700 text-indigo-600 focus:ring-indigo-500"
+																					onClick={() => {
+																						if (option.checked) {
+																							option.checked = false;
+																						} else {
+																							option.checked = true;
+																						}
+																						updateFilters(filters);
+																					}}
+																				/>
+																				<label
+																					htmlFor={`filter-mobile-${filterKey}-${optionIdx}`}
+																					className="ml-3 min-w-0 flex-1 text-white"
+																				>
+																					{option.name}
+																				</label>
+																			</div>
+																		)
+																	)}
+																</div>
+															</Disclosure.Panel>
+														</>
+													)}
+												</Disclosure>
+											);
+										})}
 									</form>
 								</Dialog.Panel>
 							</Transition.Child>
@@ -157,6 +171,9 @@ export default function SearchFilters({
 									className="block w-full bg-gray-700 border border-transparent rounded-md py-2 pl-10 pr-3 text-gray-300 placeholder-gray-400 focus:outline-none focus:bg-white focus:border-white focus:ring-white focus:text-gray-900 sm:text-sm"
 									placeholder="Search"
 									type="search"
+									onChange={(e) => {
+										updateSearch(e.target.value);
+									}}
 								/>
 							</div>
 						</div>
@@ -230,66 +247,81 @@ export default function SearchFilters({
 						<div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
 							{/* Filters */}
 							<form className="hidden lg:block">
-								{filters?.map((section, index) => (
-									<Disclosure
-										as="div"
-										key={section.filterKey}
-										className={classNames(
-											"border-b border-gray-400 py-6",
-											index === filters.length - 1 ? "border-b-0" : ""
-										)}
-									>
-										{({ open }) => (
-											<>
-												<h3 className="-my-3 flow-root">
-													<Disclosure.Button className="flex w-full items-center justify-between rounded-lg px-4 bg-gray-700 py-3 text-sm text-white hover:text-gray-400">
-														<span className="font-medium text-white">
-															{section.filterName}
-														</span>
-														<span className="ml-6 flex items-center">
-															{open ? (
-																<MinusIcon
-																	className="h-5 w-5"
-																	aria-hidden="true"
-																/>
-															) : (
-																<PlusIcon
-																	className="h-5 w-5"
-																	aria-hidden="true"
-																/>
+								{objectKeysFilters.map((filterKey, index) => {
+									const section = filters?.[filterKey as keyof Filters];
+									return (
+										<Disclosure
+											as="div"
+											key={filterKey}
+											className={classNames(
+												"border-b border-gray-400 py-6",
+												index === objectKeysFilters.length - 1
+													? "border-b-0"
+													: ""
+											)}
+										>
+											{({ open }) => (
+												<>
+													<h3 className="-my-3 flow-root">
+														<Disclosure.Button className="flex w-full items-center justify-between rounded-lg px-4 bg-gray-700 py-3 text-sm text-white hover:text-gray-400">
+															<span className="font-medium text-white">
+																{section?.filterName}
+															</span>
+															<span className="ml-6 flex items-center">
+																{open ? (
+																	<MinusIcon
+																		className="h-5 w-5"
+																		aria-hidden="true"
+																	/>
+																) : (
+																	<PlusIcon
+																		className="h-5 w-5"
+																		aria-hidden="true"
+																	/>
+																)}
+															</span>
+														</Disclosure.Button>
+													</h3>
+													<Disclosure.Panel className="pt-6">
+														<div className="space-y-4">
+															{section?.filterValues?.map(
+																(option, optionIdx) => (
+																	<div
+																		key={option.name}
+																		className="flex items-center"
+																	>
+																		<input
+																			id={`filter-${filterKey}-${optionIdx}`}
+																			name={`${filterKey}[]`}
+																			defaultValue={option.name}
+																			type="checkbox"
+																			defaultChecked={option.checked}
+																			className="h-4 w-4 rounded border-gray-700 text-indigo-600 focus:ring-indigo-500"
+																			onClick={() => {
+																				if (option.checked) {
+																					option.checked = false;
+																				} else {
+																					option.checked = true;
+																				}
+																				updateFilters(filters);
+																			}}
+																		/>
+																		<label
+																			htmlFor={`filter-${filterKey}-${optionIdx}`}
+																			className="ml-3 text-sm text-white"
+																		>
+																			{option.name}
+																		</label>
+																	</div>
+																)
 															)}
-														</span>
-													</Disclosure.Button>
-												</h3>
-												<Disclosure.Panel className="pt-6">
-													<div className="space-y-4">
-														{section?.filterValues?.map((option, optionIdx) => (
-															<div
-																key={option.name}
-																className="flex items-center"
-															>
-																<input
-																	id={`filter-${section.filterKey}-${optionIdx}`}
-																	name={`${section.filterKey}[]`}
-																	defaultValue={option.name}
-																	type="checkbox"
-																	defaultChecked={option.checked}
-																	className="h-4 w-4 rounded border-gray-700 text-indigo-600 focus:ring-indigo-500"
-																/>
-																<label
-																	htmlFor={`filter-${section.filterKey}-${optionIdx}`}
-																	className="ml-3 text-sm text-white"
-																>
-																	{option.name}
-																</label>
-															</div>
-														))}
-													</div>
-												</Disclosure.Panel>
-											</>
-										)}
-									</Disclosure>
-								))}
+														</div>
+													</Disclosure.Panel>
+												</>
+											)}
+										</Disclosure>
+									);
+								})}
 							</form>
 
 							{/* Product grid */}

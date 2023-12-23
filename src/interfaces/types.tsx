@@ -24,53 +24,46 @@ export type Status = {
 	checked: boolean;
 };
 
-export type Author = {
-	id: number;
-	name: string;
-	checked: boolean;
-};
-
-export type Artist = {
-	id: number;
-	name: string;
-	checked: boolean;
-};
-
 export type Tag = {
 	id: number;
 	name: string;
 	checked: boolean;
 };
 
-export type Filters = [
-	{
-		filterKey: "language";
+export type TrackSite = {
+	id: number;
+	name: string;
+	url: string;
+	checked: boolean;
+};
+
+export type Filters = {
+	language: {
 		filterName: "Languages";
 		filterValues: Language[] | undefined;
-	},
-	{
-		filterKey: "category";
+	};
+	category: {
 		filterName: "Categories";
 		filterValues: Category[] | undefined;
-	},
-	{
-		filterKey: "status";
+	};
+	status: {
 		filterName: "Status";
 		filterValues: Status[] | undefined;
-	},
-	{
-		filterKey: "author";
-		filterName: "Authors";
-		filterValues: Author[] | undefined;
-	},
-	{
-		filterKey: "artist";
-		filterName: "Artists";
-		filterValues: Artist[] | undefined;
-	},
-	{
-		filterKey: "tag";
+	};
+	tag: {
 		filterName: "Tags";
 		filterValues: Tag[] | undefined;
-	},
-];
+	};
+	trackSite: {
+		filterName: "Track Sites";
+		filterValues: TrackSite[] | undefined;
+	};
+};
+
+export type Results = {
+	id: number;
+	title: string;
+	description: string;
+	poster: string;
+	releaseDate: string;
+}[];

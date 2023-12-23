@@ -1,4 +1,4 @@
-import { Filters, User } from "./types";
+import { Filters, Results, User } from "./types";
 
 export type AuthContextType = {
 	user: User | undefined;
@@ -13,4 +13,8 @@ export type AuthContextType = {
 
 export type SearchContextType = {
 	filters: Filters | undefined;
+	results: Results | undefined;
+	updateFilters: (filters: Filters | undefined) => void;
+	search: string | undefined;
+	updateSearch: (search: string | undefined) => void;
 };
