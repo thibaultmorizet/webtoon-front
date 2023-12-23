@@ -4,7 +4,6 @@ import loader01 from "../../assets/lotties/loader01.json";
 import feathersClient from "../../configs/feathers";
 import { SearchContextType } from "../../interfaces/contextTypes";
 import { Filters, Results } from "../../interfaces/types";
-import "../../styles/tailwind.css";
 import { AuthData } from "./AuthProvider";
 
 // CREATE AUTH CONTEXT AND DEFAULT VALUE
