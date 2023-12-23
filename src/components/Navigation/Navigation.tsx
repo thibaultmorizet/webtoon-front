@@ -4,10 +4,8 @@ import { Fragment } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { AuthData } from "../Auth/AuthWrapper";
 import { nav } from "../Structure/Navigation";
+import { classNames } from "../../utils/statics";
 
-function classNames(...classes: string[]) {
-	return classes.filter(Boolean).join(" ");
-}
 
 export default function Navigation() {
 	const location = useLocation();

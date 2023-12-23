@@ -141,6 +141,7 @@ export const AuthWrapper = () => {
 		password?: string
 	) => {
 		try {
+			
 			const data = await feathersClient.service("users").patch(user?.id as Id, {
 				firstname,
 				lastname,

@@ -1,5 +1,6 @@
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
+import { classNames } from "../../utils/statics";
 import { AuthData } from "../Auth/AuthWrapper";
 
 export default function Profile() {
@@ -10,6 +11,8 @@ export default function Profile() {
 	const [password, setPassword] = useState<string>("");
 	const [confirmPassword, setConfirmPassword] = useState<string>("");
 	const [showPassword, setShowPassword] = useState<boolean>(false);
+
+	const [error, setError] = useState<string>("");
 
 	const seePasswordIcon = () => {
 		if (showPassword)
@@ -49,7 +52,21 @@ export default function Profile() {
 
 	const handleSubmit = async (event: { preventDefault: () => void }) => {
 		event.preventDefault();
+		if (password === "" && confirmPassword === "") {
+			updateUser(firstname, lastname);
+			setError("");
+			return;
+		}
+		if (password.length < 8) {
+			setError("Password must be at least 8 characters long");
+			return;
+		}
+		if (password !== confirmPassword) {
+			setError("Passwords do not match");
+			return;
+		}
 		updateUser(firstname, lastname, password);
+		setError("");
 	};
 
 	return (
@@ -132,7 +149,10 @@ export default function Profile() {
 												autoComplete="new-password"
 												value={password}
 												onChange={(e) => setPassword(e.target.value)}
-												className="bg-white/[0.05] block w-full border-0 rounded-md px-2 py-1.5 text-white ring-1 shadow-sm ring-inset ring-white/[0.1]  placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+												className={classNames(
+													"bg-white/[0.05] block w-full border-0 rounded-md px-2 py-1.5 text-white ring-1 shadow-sm ring-inset ring-white/[0.1]  placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6",
+													error !== "" ? "ring-2 ring-red-500" : ""
+												)}
 											/>
 											<div className="h-full absolute top-0 right-0 flex items-center ">
 												<div className="px-2 my-1 mr-2 rounded-lg bg-indigo-500 hover:bg-indigo-400 cursor-pointer">
@@ -156,7 +176,10 @@ export default function Profile() {
 												autoComplete="new-password"
 												value={confirmPassword}
 												onChange={(e) => setConfirmPassword(e.target.value)}
-												className="bg-white/[0.05] block w-full border-0 rounded-md px-2 py-1.5 text-white ring-1 shadow-sm ring-inset ring-white/[0.1]  placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+												className={classNames(
+													"bg-white/[0.05] block w-full border-0 rounded-md px-2 py-1.5 text-white ring-1 shadow-sm ring-inset ring-white/[0.1]  placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6",
+													error !== "" ? "ring-2 ring-red-500" : ""
+												)}
 											/>
 											<div className="h-full absolute top-0 right-0 flex items-center ">
 												<div className="px-2 my-1 mr-2 rounded-lg bg-indigo-500 hover:bg-indigo-400 cursor-pointer">
@@ -164,6 +187,9 @@ export default function Profile() {
 												</div>
 											</div>
 										</div>
+									</div>
+									<div className="sm:col-span-6">
+										<p className="text-red-500 text-sm text-center">{error}</p>
 									</div>
 								</div>
 							</div>
