@@ -1,4 +1,4 @@
-import { AuthData } from "../Auth/AuthWrapper";
+import { AuthData } from "../Providers/AuthProvider";
 
 export default function NotFound() {
 	const { user } = AuthData();

@@ -1,7 +1,7 @@
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import { classNames } from "../../utils/statics";
-import { AuthData } from "../Auth/AuthWrapper";
+import { AuthData } from "../Providers/AuthProvider";
 
 export default function Profile() {
 	const { user, updateUser } = AuthData();

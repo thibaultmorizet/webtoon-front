@@ -1,4 +1,4 @@
-import { AuthData } from "../Auth/AuthWrapper";
+import { AuthData } from "../Providers/AuthProvider";
 import { RenderMenu } from "./RenderNavigation";
 
 export const RenderHeader = () => {

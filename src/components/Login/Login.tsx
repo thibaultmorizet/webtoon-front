@@ -1,6 +1,6 @@
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
-import { AuthData } from "../Auth/AuthWrapper";
+import { AuthData } from "../Providers/AuthProvider";
 
 export default function Login() {
 	const [email, setEmail] = useState<string>("");
@@ -41,7 +41,7 @@ export default function Login() {
 			document.getElementById("password")!.setAttribute("type", "password");
 		}
 	}, [showPassword]);
-	
+
 	return (
 		<>
 			<div className="flex min-h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8 align-middle bg-gray-900">

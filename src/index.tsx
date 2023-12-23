@@ -2,7 +2,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { AuthWrapper } from "./components/Auth/AuthWrapper";
+import { AuthProvider } from "./components/Providers/AuthProvider";
 import reportWebVitals from "./reportWebVitals";
 
 const root = ReactDOM.createRoot(
@@ -11,7 +11,7 @@ const root = ReactDOM.createRoot(
 root.render(
 	// <React.StrictMode>
 	<BrowserRouter>
-		<AuthWrapper />
+		<AuthProvider />
 		<ToastContainer />
 	</BrowserRouter>
 	// </React.StrictMode>

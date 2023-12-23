@@ -2,10 +2,9 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, UserIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Fragment } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { AuthData } from "../Auth/AuthWrapper";
-import { nav } from "../Structure/Navigation";
 import { classNames } from "../../utils/statics";
-
+import { AuthData } from "../Providers/AuthProvider";
+import { nav } from "../Structure/Navigation";
 
 export default function Navigation() {
 	const location = useLocation();

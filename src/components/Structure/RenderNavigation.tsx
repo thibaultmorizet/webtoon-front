@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
-import { AuthData } from "../../components/Auth/AuthWrapper";
 import Navigation from "../Navigation/Navigation";
 import NotFound from "../NotFound/NotFound";
+import { AuthData } from "../Providers/AuthProvider";
 import { nav } from "./Navigation";
 
 export const RenderRoutes = () => {

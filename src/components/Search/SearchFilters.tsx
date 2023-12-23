@@ -4,59 +4,26 @@ import {
 	FunnelIcon,
 	MinusIcon,
 	PlusIcon,
-	Squares2X2Icon,
 } from "@heroicons/react/20/solid";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { Fragment, useState } from "react";
-import { classNames } from "../../utils/statics";
+import { classNames, firstLetterToUpperCase } from "../../utils/statics";
+import { SearchData } from "../Providers/SearchProvider";
 
 export default function SearchFilters({
 	children,
 }: {
 	children?: JSX.Element;
 }) {
+	const [selectedSort, setSelectedSort] = useState("Most Popular");
 	const sortOptions = [
-		{ name: "Most Popular", href: "#", current: true },
-		{ name: "Best Rating", href: "#", current: false },
-		{ name: "Newest", href: "#", current: false },
+		{ name: "Most Popular" },
+		{ name: "Best Rating" },
+		{ name: "Newest" },
 	];
-	const filters = [
-		{
-			id: "color",
-			name: "Color",
-			options: [
-				{ value: "white", label: "White", checked: false },
-				{ value: "beige", label: "Beige", checked: false },
-				{ value: "blue", label: "Blue", checked: true },
-				{ value: "brown", label: "Brown", checked: false },
-				{ value: "green", label: "Green", checked: false },
-				{ value: "purple", label: "Purple", checked: false },
-			],
-		},
-		{
-			id: "category",
-			name: "Category",
-			options: [
-				{ value: "new-arrivals", label: "New Arrivals", checked: false },
-				{ value: "sale", label: "Sale", checked: false },
-				{ value: "travel", label: "Travel", checked: true },
-				{ value: "organization", label: "Organization", checked: false },
-				{ value: "accessories", label: "Accessories", checked: false },
-			],
-		},
-		{
-			id: "size",
-			name: "Size",
-			options: [
-				{ value: "2l", label: "2L", checked: false },
-				{ value: "6l", label: "6L", checked: false },
-				{ value: "12l", label: "12L", checked: false },
-				{ value: "18l", label: "18L", checked: false },
-				{ value: "20l", label: "20L", checked: false },
-				{ value: "40l", label: "40L", checked: true },
-			],
-		},
-	];
+
+	const { filters } = SearchData();
+
 	const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
 	return (
@@ -106,10 +73,10 @@ export default function SearchFilters({
 
 									{/* Filters */}
 									<form className="mt-4 border-t border-gray-400">
-										{filters.map((section) => (
+										{filters?.map((section) => (
 											<Disclosure
 												as="div"
-												key={section.id}
+												key={section.filterName}
 												className="border-t border-gray-400 px-4 py-6"
 											>
 												{({ open }) => (
@@ -117,7 +84,7 @@ export default function SearchFilters({
 														<h3 className="-mx-2 -my-3 flow-root">
 															<Disclosure.Button className="flex w-full items-center justify-between rounded-lg bg-gray-700 px-2 py-3 text-white hover:text-gray-400">
 																<span className="font-medium text-white">
-																	{section.name}
+																	{firstLetterToUpperCase(section.filterName)}
 																</span>
 																<span className="ml-6 flex items-center">
 																	{open ? (
@@ -136,27 +103,29 @@ export default function SearchFilters({
 														</h3>
 														<Disclosure.Panel className="pt-6">
 															<div className="space-y-6">
-																{section.options.map((option, optionIdx) => (
-																	<div
-																		key={option.value}
-																		className="flex items-center"
-																	>
-																		<input
-																			id={`filter-mobile-${section.id}-${optionIdx}`}
-																			name={`${section.id}[]`}
-																			defaultValue={option.value}
-																			type="checkbox"
-																			defaultChecked={option.checked}
-																			className="h-4 w-4 rounded border-gray-700 text-indigo-600 focus:ring-indigo-500"
-																		/>
-																		<label
-																			htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
-																			className="ml-3 min-w-0 flex-1 text-white"
+																{section?.filterValues?.map(
+																	(option, optionIdx) => (
+																		<div
+																			key={option.name}
+																			className="flex items-center"
 																		>
-																			{option.label}
-																		</label>
-																	</div>
-																))}
+																			<input
+																				id={`filter-mobile-${section.filterName}-${optionIdx}`}
+																				name={`${section.filterName}[]`}
+																				defaultValue={option.name}
+																				type="checkbox"
+																				defaultChecked={option.checked}
+																				className="h-4 w-4 rounded border-gray-700 text-indigo-600 focus:ring-indigo-500"
+																			/>
+																			<label
+																				htmlFor={`filter-mobile-${section.filterName}-${optionIdx}`}
+																				className="ml-3 min-w-0 flex-1 text-white"
+																			>
+																				{option.name}
+																			</label>
+																		</div>
+																	)
+																)}
 															</div>
 														</Disclosure.Panel>
 													</>
@@ -198,22 +167,26 @@ export default function SearchFilters({
 									leaveTo="transform opacity-0 scale-95"
 								>
 									<Menu.Items className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
-										<div className="py-1">
-											{sortOptions.map((option) => (
+										<div className="py-0">
+											{sortOptions.map((option, index) => (
 												<Menu.Item key={option.name}>
 													{({ active }) => (
-														<a
-															href={option.href}
+														<button
+															onClick={() => setSelectedSort(option.name)}
 															className={classNames(
-																option.current
+																option.name === selectedSort
 																	? "font-medium text-gray-900"
 																	: "text-gray-500",
 																active ? "bg-gray-100" : "",
-																"block px-4 py-2 text-sm"
+																"inline-block px-4 py-2 text-sm w-full ",
+																index === 0 ? "rounded-t-md" : "",
+																index === sortOptions.length - 1
+																	? "rounded-b-md"
+																	: ""
 															)}
 														>
 															{option.name}
-														</a>
+														</button>
 													)}
 												</Menu.Item>
 											))}
@@ -222,13 +195,6 @@ export default function SearchFilters({
 								</Transition>
 							</Menu>
 
-							<button
-								type="button"
-								className="-m-2 ml-5 p-2 text-white hover:text-gray-300 sm:ml-7"
-							>
-								<span className="sr-only">View grid</span>
-								<Squares2X2Icon className="h-5 w-5" aria-hidden="true" />
-							</button>
 							<button
 								type="button"
 								className="-m-2 ml-4 p-2 text-white hover:text-gray-300 sm:ml-6 lg:hidden"
@@ -248,10 +214,10 @@ export default function SearchFilters({
 						<div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
 							{/* Filters */}
 							<form className="hidden lg:block">
-								{filters.map((section, index) => (
+								{filters?.map((section, index) => (
 									<Disclosure
 										as="div"
-										key={section.id}
+										key={section.filterName}
 										className={classNames(
 											"border-b border-gray-400 py-6",
 											index === filters.length - 1 ? "border-b-0" : ""
@@ -262,7 +228,7 @@ export default function SearchFilters({
 												<h3 className="-my-3 flow-root">
 													<Disclosure.Button className="flex w-full items-center justify-between rounded-lg px-4 bg-gray-700 py-3 text-sm text-white hover:text-gray-400">
 														<span className="font-medium text-white">
-															{section.name}
+															{section.filterName}
 														</span>
 														<span className="ml-6 flex items-center">
 															{open ? (
@@ -281,24 +247,24 @@ export default function SearchFilters({
 												</h3>
 												<Disclosure.Panel className="pt-6">
 													<div className="space-y-4">
-														{section.options.map((option, optionIdx) => (
+														{section?.filterValues?.map((option, optionIdx) => (
 															<div
-																key={option.value}
+																key={option.name}
 																className="flex items-center"
 															>
 																<input
-																	id={`filter-${section.id}-${optionIdx}`}
-																	name={`${section.id}[]`}
-																	defaultValue={option.value}
+																	id={`filter-${section.filterName}-${optionIdx}`}
+																	name={`${section.filterName}[]`}
+																	defaultValue={option.name}
 																	type="checkbox"
 																	defaultChecked={option.checked}
 																	className="h-4 w-4 rounded border-gray-700 text-indigo-600 focus:ring-indigo-500"
 																/>
 																<label
-																	htmlFor={`filter-${section.id}-${optionIdx}`}
+																	htmlFor={`filter-${section.filterName}-${optionIdx}`}
 																	className="ml-3 text-sm text-white"
 																>
-																	{option.label}
+																	{option.name}
 																</label>
 															</div>
 														))}

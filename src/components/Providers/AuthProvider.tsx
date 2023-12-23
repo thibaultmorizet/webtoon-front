@@ -5,31 +5,15 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import loader01 from "../../assets/lotties/loader01.json";
 import feathersClient from "../../configs/feathers";
+import { AuthContextType } from "../../interfaces/contextTypes";
+import { User } from "../../interfaces/types";
 import "../../styles/tailwind.css";
 import { RenderHeader } from "../Structure/Header";
 import { RenderRoutes } from "../Structure/RenderNavigation";
-
-export type User = {
-	id: Number;
-	email: string;
-	firstname: string;
-	lastname: string;
-	isAuthenticated: boolean;
-};
-
-export type ContextType = {
-	user: User | undefined;
-	login: (email: string, password: string) => void;
-	logout: () => void;
-	updateUser: (
-		firstname?: string,
-		lastname?: string,
-		password?: string
-	) => void;
-};
+import { SearchProvider } from "./SearchProvider";
 
 // CREATE AUTH CONTEXT AND DEFAULT VALUE
-const AuthContext = createContext<ContextType>({
+const AuthContext = createContext<AuthContextType>({
 	user: {
 		id: 0,
 		email: "",
@@ -44,7 +28,7 @@ const AuthContext = createContext<ContextType>({
 
 export const AuthData = () => useContext(AuthContext);
 
-export const AuthWrapper = () => {
+export const AuthProvider = () => {
 	// USER STATE PASSED TO APP CONTEXT
 	const [user, setUser] = useState<User>();
 
@@ -141,7 +125,6 @@ export const AuthWrapper = () => {
 		password?: string
 	) => {
 		try {
-			
 			const data = await feathersClient.service("users").patch(user?.id as Id, {
 				firstname,
 				lastname,
@@ -164,10 +147,12 @@ export const AuthWrapper = () => {
 
 	return user ? (
 		<AuthContext.Provider value={{ user, login, logout, updateUser }}>
-			<div className="min-h-screen flex flex-1 flex-col">
-				<RenderHeader />
-				<RenderRoutes />
-			</div>
+			<SearchProvider>
+				<div className="min-h-screen flex flex-1 flex-col">
+					<RenderHeader />
+					<RenderRoutes />
+				</div>
+			</SearchProvider>
 		</AuthContext.Provider>
 	) : (
 		<div style={{ height: "80vh", display: "flex", alignItems: "center" }}>
