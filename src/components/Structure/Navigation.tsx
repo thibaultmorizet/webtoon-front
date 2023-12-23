@@ -3,6 +3,7 @@ import Login from "../Login/Login";
 import Profile from "../Profile/Profile";
 
 import { ReactElement } from "react";
+import Search from "../Search/Search";
 
 export type RouteType = {
 	path: string;
@@ -19,6 +20,14 @@ export const nav = [
 		path: "/",
 		name: "Home",
 		element: <Home />,
+		isNavBar: true,
+		isMenu: false,
+		isPrivate: true,
+	},
+	{
+		path: "/search",
+		name: "Search",
+		element: <Search />,
 		isNavBar: true,
 		isMenu: false,
 		isPrivate: true,
