@@ -5,7 +5,7 @@ import {
 	MinusIcon,
 	PlusIcon,
 } from "@heroicons/react/20/solid";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Fragment, useState } from "react";
 import { classNames, firstLetterToUpperCase } from "../../utils/statics";
 import { SearchData } from "../Providers/SearchProvider";
@@ -141,9 +141,25 @@ export default function SearchFilters({
 
 				<main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 					<div className="flex items-baseline justify-between border-b border-gray-400 pb-6 pt-24">
-						<h1 className="text-4xl font-bold tracking-tight text-white">
-							Search
-						</h1>
+						{/* Search bar */}
+						<div className="min-w-5" />
+						<div className="flex-1 max-w-xl">
+							<label htmlFor="search" className="sr-only">
+								Search
+							</label>
+							<div className="relative text-gray-400 focus-within:text-gray-600">
+								<div className="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center">
+									<MagnifyingGlassIcon className="h-6 w-6" />
+								</div>
+								<input
+									id="search"
+									name="search"
+									className="block w-full bg-gray-700 border border-transparent rounded-md py-2 pl-10 pr-3 text-gray-300 placeholder-gray-400 focus:outline-none focus:bg-white focus:border-white focus:ring-white focus:text-gray-900 sm:text-sm"
+									placeholder="Search"
+									type="search"
+								/>
+							</div>
+						</div>
 
 						<div className="flex items-center">
 							<Menu as="div" className="relative inline-block text-left">
