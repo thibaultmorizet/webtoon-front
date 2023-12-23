@@ -9,6 +9,7 @@ export type User = {
 export type Language = {
 	id: number;
 	name: string;
+	key: string;
 	checked: boolean;
 };
 
@@ -42,17 +43,9 @@ export type Filters = {
 		filterName: "Languages";
 		filterValues: Language[] | undefined;
 	};
-	category: {
-		filterName: "Categories";
-		filterValues: Category[] | undefined;
-	};
 	status: {
 		filterName: "Status";
 		filterValues: Status[] | undefined;
-	};
-	tag: {
-		filterName: "Tags";
-		filterValues: Tag[] | undefined;
 	};
 	trackSite: {
 		filterName: "Track Sites";

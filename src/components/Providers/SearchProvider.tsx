@@ -27,9 +27,7 @@ export const SearchProvider = ({ children }: { children?: JSX.Element }) => {
 	const [results, setResults] = useState<Results>();
 	const getFilters = async () => {
 		const languages = await feathersClient.service("languages").find();
-		const categories = await feathersClient.service("categories").find();
 		const status = await feathersClient.service("status").find();
-		const tags = await feathersClient.service("tags").find();
 		const trackSites = await feathersClient.service("tracksites").find();
 
 		setFilters({
@@ -37,17 +35,9 @@ export const SearchProvider = ({ children }: { children?: JSX.Element }) => {
 				filterName: "Languages",
 				filterValues: languages.data,
 			},
-			category: {
-				filterName: "Categories",
-				filterValues: categories.data,
-			},
 			status: {
 				filterName: "Status",
 				filterValues: status.data,
-			},
-			tag: {
-				filterName: "Tags",
-				filterValues: tags.data,
 			},
 			trackSite: {
 				filterName: "Track Sites",
@@ -73,21 +63,49 @@ export const SearchProvider = ({ children }: { children?: JSX.Element }) => {
 
 	const getResults = async (filters?: Filters, search?: string) => {
 		if (!filters) return;
-		const numberOfTrackSitesChecked = filters.trackSite.filterValues?.filter(
+		const checkedTracksites = filters.trackSite.filterValues?.filter(
 			(trackSite) => trackSite.checked
-		).length;
-		if (numberOfTrackSitesChecked === 0) return;
-		console.log(filters, search);
+		);
 
-		filters.trackSite.filterValues?.forEach((trackSite) => {
-			if (trackSite.checked) {
-				console.log(trackSite.name);
+		checkedTracksites?.forEach(async (trackSite) => {
+			if (trackSite.name === "mangadex") {
+				const searchParams = {
+					title: "title",
+					language: "availableTranslatedLanguage[]",
+					statut: "status[]",
+				};
+				const statusName = {
+					onGoing: "ongoing",
+					finished: "completed",
+					canceled: "cancelled",
+					pausing: "hiatus",
+				};
+
+				const title = search ? `&${searchParams.title}=${search}` : ``;
+				const language = filters.language.filterValues
+					?.filter((language) => language.checked)
+					.map((language) => `&${searchParams.language}=${language.key}`)
+					.join("");
+
+				const status = filters.status.filterValues
+					?.filter((statut) => statut.checked)
+					.map(
+						(statut) =>
+							`&${searchParams.statut}=${statusName?.[
+								statut.name as keyof typeof statusName
+							]}`
+					)
+					.join("");
+				console.log("status", status);
+
+				const result = await fetch(
+					`${trackSite.url}/manga/?limit=32&offset=0${title}${language}${status}`
+				)
+					.then((res) => res.json())
+					.then((res) => res.data)
+					.then((res) => console.log(res[0]));
 			}
 		});
-
-		// const result = await fetch(`http://localhost:3030/search?search=${search}`);
-
-		// setResults(results);
 	};
 
 	return filters ? (
